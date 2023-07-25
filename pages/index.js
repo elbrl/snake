@@ -2,25 +2,26 @@ import { useEffect, useState } from "react";
 import useInterval from "use-interval";
 
 const zoom = 10;
-const areaWidth = 95;
-const areaHeight = 95;
+const areaWidth = 40;
+const areaHeight = 40;
 
 export default function Home() {
+  const [hool, setHool] = useState({
+    top: Math.floor(Math.random() * areaHeight),
+    left: Math.floor(Math.random() * areaWidth),
+  });
   const [body, setBody] = useState([
     { top: 3, left: 10 },
     { top: 3, left: 9 },
     { top: 3, left: 8 },
-    { top: 3, left: 7 },
-    { top: 3, left: 6 },
-    { top: 3, left: 5 },
-    { top: 3, left: 4 },
-    { top: 3, left: 3 },
-    { top: 3, left: 2 },
-    { top: 3, left: 1 },
-    { top: 3, left: 0 },
   ]);
   const [direction, setDirection] = useState("down");
   useEffect(() => {
+    setHool({
+      top: Math.floor(Math.random() * areaHeight),
+      left: Math.floor(Math.random() * areaWidth),
+    });
+    console.log(hool);
     window.addEventListener("keydown", (e) => {
       switch (e.code) {
         case "ArrowDown":
@@ -37,7 +38,7 @@ export default function Home() {
           break;
       }
     });
-  });
+  }, []);
   function goRight() {
     const newBody = [...body];
 
@@ -98,7 +99,30 @@ export default function Home() {
         goUp();
         break;
     }
-  }, 20);
+    console.log(body);
+    if (body[0].top === hool.top && body[0].left === hool.left) {
+      let newB = [...body];
+      newB.unshift({ top: hool.top, left: hool.left });
+      setBody(newB);
+      console.log("urt", body.length);
+      setHool({
+        top: Math.floor(Math.random() * areaHeight),
+        left: Math.floor(Math.random() * areaWidth),
+      });
+    }
+  }, 200);
+  // function targalalt() {
+  //   console.log(body[0].top * 10);
+  //   console.log("hool", hool.top);
+  //   console.log("hoolLeft", hool.left);
+  //   if (body[0].top * 10 === hool.top && body[0].left * 10 === hool.left) {
+  //     body.push({ top: hool.top, left: hool.left });
+  //     setHool({
+  //       top: Math.floor(Math.random() * zoom) * areaHeight,
+  //       left: Math.floor(Math.random() * zoom) * areaWidth,
+  //     });
+  //   }
+  // }
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24`}
@@ -107,6 +131,15 @@ export default function Home() {
         className="relative bg-slate-300"
         style={{ width: areaWidth * zoom, height: areaHeight * zoom }}
       >
+        <div
+          className="absolute bg-black"
+          style={{
+            top: hool.top * zoom,
+            left: hool.left * zoom,
+            width: zoom,
+            height: zoom,
+          }}
+        ></div>
         {body.map((segment) => (
           <div
             className="absolute rounded bg-slate-900"
