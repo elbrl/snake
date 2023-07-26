@@ -10,6 +10,8 @@ export default function Home() {
     top: Math.floor(Math.random() * areaHeight),
     left: Math.floor(Math.random() * areaWidth),
   });
+  const [score, setScore] = useState();
+  const [check, setCheck] = useState(false);
   const [body, setBody] = useState([
     { top: 3, left: 10 },
     { top: 3, left: 9 },
@@ -21,7 +23,8 @@ export default function Home() {
       top: Math.floor(Math.random() * areaHeight),
       left: Math.floor(Math.random() * areaWidth),
     });
-    console.log(hool);
+
+    // console.log(hool);
     window.addEventListener("keydown", (e) => {
       switch (e.code) {
         case "ArrowDown":
@@ -39,6 +42,22 @@ export default function Home() {
       }
     });
   }, []);
+  useEffect(() => {
+    setScore(body.length - 3);
+  }, [body.length]);
+  useEffect(() => {
+    if (body[0].top === hool.top && body[0].left === hool.left) {
+      let newB = [...body];
+      newB.push({ top: hool.top, left: hool.left });
+      setBody(newB);
+      // console.log("urt", body.length);
+      setHool({
+        top: Math.floor(Math.random() * areaHeight),
+        left: Math.floor(Math.random() * areaWidth),
+      });
+    }
+  }, [body]);
+
   function goRight() {
     const newBody = [...body];
 
@@ -99,37 +118,36 @@ export default function Home() {
         goUp();
         break;
     }
-    console.log(body);
-    if (body[0].top === hool.top && body[0].left === hool.left) {
-      let newB = [...body];
-      newB.unshift({ top: hool.top, left: hool.left });
-      setBody(newB);
-      console.log("urt", body.length);
-      setHool({
-        top: Math.floor(Math.random() * areaHeight),
-        left: Math.floor(Math.random() * areaWidth),
-      });
+    for (let i = 1; i < body.length - 1; i++) {
+      if (body[0].top === body[i].top && body[0].left === body[i].left) {
+        // console.log("uheeshaas");
+        setCheck(true);
+      }
     }
   }, 200);
-  // function targalalt() {
-  //   console.log(body[0].top * 10);
-  //   console.log("hool", hool.top);
-  //   console.log("hoolLeft", hool.left);
-  //   if (body[0].top * 10 === hool.top && body[0].left * 10 === hool.left) {
-  //     body.push({ top: hool.top, left: hool.left });
-  //     setHool({
-  //       top: Math.floor(Math.random() * zoom) * areaHeight,
-  //       left: Math.floor(Math.random() * zoom) * areaWidth,
-  //     });
-  //   }
-  // }
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24`}
-    >
+    <main className={`flex min-h-screen flex-col items-center  p-24`}>
+      <div style={{}}>Score: {score * 10}</div>
+      {check ? (
+        <div>
+          <button
+            className="bg-white p-2 rounded"
+            onClick={() => window.location.reload()}
+          >
+            Дахин эхлэх
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
       <div
         className="relative bg-slate-300"
-        style={{ width: areaWidth * zoom, height: areaHeight * zoom }}
+        style={{
+          width: areaWidth * zoom,
+          height: areaHeight * zoom,
+          display: check ? "none" : "flex",
+        }}
       >
         <div
           className="absolute bg-black"
@@ -138,15 +156,28 @@ export default function Home() {
             left: hool.left * zoom,
             width: zoom,
             height: zoom,
+            backgroundColor: "green",
+            borderRadius: "10px",
           }}
         ></div>
-        {body.map((segment) => (
+
+        {/* {zogsooh ? :""} */}
+        {body.map((segment, key) => (
           <div
-            className="absolute rounded bg-slate-900"
+            onClick={() => {
+              console.log(key);
+            }}
+            className="absolute rounded "
             style={{
+              // backgroundColor:
+              //   key !== 0 && key % 2 == 0
+              //     ? "red"
+              //     : "black" && key == 0
+              //     ? "blue"
+              //     : "black",
+              backgroundColor: key == body[body.length - 1] ? "white" : "black",
               top: segment.top * zoom,
               left: segment.left * zoom,
-
               width: zoom,
               height: zoom,
             }}
